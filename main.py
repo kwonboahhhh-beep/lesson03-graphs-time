@@ -57,8 +57,44 @@ def section_daily_audience(data: pd.DataFrame) -> None:
 
 section_daily_audience(df)
 
+
 # ---------------------------------------------------------------------------
-# 구역 2 이후: 새 그래프는 아래에 구역 함수를 만들어 추가하세요.
+# 구역 2. 일관객 합계 상위 5편 비교
+# ---------------------------------------------------------------------------
+def section_top5_audience(data: pd.DataFrame) -> None:
+    st.header("2. 일관객 합계 상위 5편 비교")
+
+    # 기간 전체 일관객 합계가 가장 큰 5편 (큰 순서대로)
+    top5 = data.groupby("영화명")["일관객"].sum().nlargest(5).index.tolist()
+    top = data[data["영화명"].isin(top5)]
+
+    fig = px.line(
+        top,
+        x="날짜",
+        y="일관객",
+        color="영화명",
+        category_orders={"영화명": top5},
+        title="일관객 합계 상위 5편의 날짜별 일관객",
+    )
+    fig.update_traces(
+        hovertemplate="%{x|%Y-%m-%d}<br>일관객: %{y:,}명<extra>%{fullData.name}</extra>"
+    )
+    fig.update_layout(
+        xaxis_title="날짜",
+        yaxis_title="일관객(명)",
+        legend_title_text="영화명 (클릭하면 켜고 끌 수 있어요)",
+        hovermode="closest",
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+    show_insight("여기에 이 그래프로 알 수 있는 내용을 한 문장으로 적어 주세요.")
+
+
+st.divider()
+section_top5_audience(df)
+
+# ---------------------------------------------------------------------------
+# 구역 3 이후: 새 그래프는 아래에 구역 함수를 만들어 추가하세요.
 # ---------------------------------------------------------------------------
 # st.divider()
 # section_next_chart(df)
